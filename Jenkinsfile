@@ -4,12 +4,9 @@ pipeline {
     environment {
         IMAGE_NAME = "imbah300/cw2-server"
         IMAGE_TAG = "1.0"
-        PROD_SERVER = "ubuntu@ec2-98-88-250-195.compute-1.amazonaws.com"
+        PROD_SERVER = "ubuntu@ec2-3-87-98-70.compute-1.amazonaws.com"
         PROD_PLAYBOOK = "k8s.yml"
-    }
-
-    triggers {
-        githubPush()
+        DOCKER_CREDS = credentials('docker')
     }
 
     stages {
@@ -42,18 +39,21 @@ pipeline {
             }
         }
 
+        stage('Login to DockerHub') {
+            steps {
+               
+                sh """
+                    echo $DOCKER_CREDS_PSW | docker login -u "imbah300" --password-stdin
+                """
+            }
+        }
+
         stage('Push to DockerHub') {
             steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-creds',
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_PASS'
-                )]) {
-                    sh """
-                        echo "$DOCKER_PASS" | docker login -u imbah300 --password-stdin
-                        docker push ${IMAGE_NAME}:${IMAGE_TAG}
-                    """
-                }
+               
+                sh """
+                    docker push ${IMAGE_NAME}:${IMAGE_TAG}
+                """
             }
         }
 
@@ -74,10 +74,6 @@ pipeline {
 
         failure {
             echo 'Pipeline failed. Check the logs above for details.'
-        }
-
-        always {
-            sh 'docker system prune -f || true'
         }
     }
 }
