@@ -59,10 +59,12 @@ pipeline {
 
         stage('Deploy to Production via Ansible') {
             steps {
-                sh """
-                    ssh -o StrictHostKeyChecking=no ${PROD_SERVER} \
-                    'ansible-playbook ${PROD_PLAYBOOK}'
-                """
+                sshagent(['prod-ssh-key']) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${PROD_SERVER} \
+                        'ansible-playbook ${PROD_PLAYBOOK}'
+                    """
+                }
             }
         }
     }
