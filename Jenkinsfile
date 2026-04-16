@@ -41,7 +41,7 @@ pipeline {
 	
 	stage('Docker Login') {
 		steps {
-			sh 'echo $DOCKER_CRED | docker login -u imbah300 $DOCKER_CRED_PSW'
+			sh 'echo $DOCKER_CRED | docker login -u imbah300 $DOCKER_CRED_PSW --password-stdin'
 		}
 	}
 
