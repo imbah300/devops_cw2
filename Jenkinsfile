@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = "imbah300/cw2-server"
         IMAGE_TAG = "1.0"
-        PROD_SERVER = "ubuntu@ec2-3-87-98-70.compute-1.amazonaws.com"
+        PROD_SERVER = "ubuntu@ec2-44-223-60-161.compute-1.amazonaws.com"
         PROD_PLAYBOOK = "k8s.yml"
         DOCKER_CREDS = credentials('docker')
     }
